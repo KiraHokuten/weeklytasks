@@ -45,14 +45,13 @@
         .dropdown-container {
             margin-left: 3ch; /* Adjust the margin as needed */
         }
-        .done {
-            text-decoration: line-through;
+        .done select {
             color: green;
         }
-        .pending {
+        .pending select {
             color: yellow;
         }
-        .na {
+        .na select {
             color: gray;
         }
     </style>
@@ -121,30 +120,15 @@
                     <option value="na">N/A</option>
                 `;
                 dropdown.addEventListener("change", () => {
-                    if (dropdown.value === "done") {
-                        taskNameElement.classList.remove("pending", "na");
-                        taskNameElement.classList.add("done");
-                    } else if (dropdown.value === "pending") {
-                        taskNameElement.classList.remove("done", "na");
-                        taskNameElement.classList.add("pending");
-                    } else {
-                        taskNameElement.classList.remove("done", "pending");
-                        taskNameElement.classList.add("na");
-                    }
                     saveProgress(profile, task, dropdown.value);
+                    applyColorStyle(dropdownContainer, dropdown.value);
                 });
 
                 // Retrieve progress from localStorage
                 const progress = getProgress(profile, task);
                 if (progress) {
                     dropdown.value = progress;
-                    if (progress === "done") {
-                        taskNameElement.classList.add("done");
-                    } else if (progress === "pending") {
-                        taskNameElement.classList.add("pending");
-                    } else {
-                        taskNameElement.classList.add("na");
-                    }
+                    applyColorStyle(dropdownContainer, progress);
                 }
 
                 dropdownContainer.appendChild(dropdown);
@@ -167,6 +151,12 @@
         // Function to retrieve task progress from localStorage
         function getProgress(profile, task) {
             return localStorage.getItem(`${profile}-${task}`);
+        }
+
+        // Function to apply color style to dropdown based on progress
+        function applyColorStyle(dropdownContainer, progress) {
+            dropdownContainer.classList.remove("done", "pending", "na");
+            dropdownContainer.classList.add(progress);
         }
 
         // Event listener for profile selection
