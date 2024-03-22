@@ -61,6 +61,7 @@
         <h1>LX Weekly Task Tracker</h1>
         
         <!-- Profile Selection -->
+        <label for="profileSelect">Select Profile:</label>
         <select id="profileSelect">
             <option value="Kira Hokuten">Kira Hokuten</option>
             <option value="Chelsea Taal">Chelsea Taal</option>
@@ -70,6 +71,12 @@
             <option value="Tim Sy">Tim Sy</option>
             <option value="Pao Berba">Pao Berba</option>
             <option value="V Tabaniag">V Tabaniag</option>
+        </select>
+        
+        <!-- Week Selection -->
+        <label for="weekSelect">Select Week:</label>
+        <select id="weekSelect">
+            <!-- Weeks will be dynamically added here -->
         </select>
         
         <!-- Task List -->
@@ -96,7 +103,7 @@
         ];
 
         // Function to render tasks for the selected profile
-        function renderTasks(profile) {
+        function renderTasks(profile, week) {
             const taskList = document.getElementById("taskList");
             taskList.innerHTML = ""; // Clear existing tasks
             
@@ -120,12 +127,12 @@
                     <option value="na">N/A</option>
                 `;
                 dropdown.addEventListener("change", () => {
-                    saveProgress(profile, task, dropdown.value);
+                    saveProgress(profile, week, task, dropdown.value);
                     applyColorStyle(dropdownContainer, dropdown.value);
                 });
 
                 // Retrieve progress from localStorage
-                const progress = getProgress(profile, task);
+                const progress = getProgress(profile, week, task);
                 if (progress) {
                     dropdown.value = progress;
                     applyColorStyle(dropdownContainer, progress);
@@ -144,13 +151,13 @@
         }
 
         // Function to save task progress to localStorage
-        function saveProgress(profile, task, progress) {
-            localStorage.setItem(`${profile}-${task}`, progress);
+        function saveProgress(profile, week, task, progress) {
+            localStorage.setItem(`${profile}-${week}-${task}`, progress);
         }
 
         // Function to retrieve task progress from localStorage
-        function getProgress(profile, task) {
-            return localStorage.getItem(`${profile}-${task}`);
+        function getProgress(profile, week, task) {
+            return localStorage.getItem(`${profile}-${week}-${task}`);
         }
 
         // Function to apply color style to dropdown based on progress
@@ -159,14 +166,53 @@
             dropdownContainer.classList.add(progress);
         }
 
+        // Function to generate weeks for the entire year
+        function generateWeeks() {
+            const weekSelect = document.getElementById("weekSelect");
+            const startDate = new Date("2024-01-06"); // Week starting from Saturday
+            const endDate = new Date("2024-12-29"); // Last week of the year
+
+            const options = [];
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const weekString = getWeekString(currentDate);
+                options.push(`<option value="${weekString}">${weekString}</option>`);
+                currentDate.setDate(currentDate.getDate() + 7); // Move to next Saturday
+            }
+
+            weekSelect.innerHTML = options.join("");
+        }
+
+        // Function to get week string in the format "WB-DD-MM-Year"
+        function getWeekString(date) {
+            const wb = "WB";
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${wb}-${day}-${month}-${year}`;
+        }
+
         // Event listener for profile selection
         document.getElementById("profileSelect").addEventListener("change", function() {
             const selectedProfile = this.value;
-            renderTasks(selectedProfile);
+            const selectedWeek = document.getElementById("weekSelect").value;
+            renderTasks(selectedProfile, selectedWeek);
         });
 
-        // Call renderTasks function with default profile (Kira Hokuten)
-        renderTasks("Kira Hokuten");
+        // Event listener for week selection
+        document.getElementById("weekSelect").addEventListener("change", function() {
+            const selectedProfile = document.getElementById("profileSelect").value;
+            const selectedWeek = this.value;
+            renderTasks(selectedProfile, selectedWeek);
+        });
+
+        // Initialize the weeks dropdown
+        generateWeeks();
+
+        // Initialize task list for the selected profile and current week
+        const selectedProfile = document.getElementById("profileSelect").value;
+        const selectedWeek = document.getElementById("weekSelect").value;
+        renderTasks(selectedProfile, selectedWeek);
     </script>
 
     <!-- Footer -->
