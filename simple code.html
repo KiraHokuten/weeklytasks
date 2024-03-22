@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LX Weekly Task Tracker</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        button {
+            cursor: pointer;
+        }
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .footer {
+            font-size: 0.8em;
+        }
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            width: 80%; /* Set width to 80% of the container */
+            max-width: 600px; /* Set maximum width to limit the size of the tasks */
+        }
+        .task-name {
+            flex: 1;
+        }
+        .dropdown-container {
+            margin-left: 3ch; /* Adjust the margin as needed */
+        }
+        .done {
+            text-decoration: line-through;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LX Weekly Task Tracker</h1>
+        
+        <!-- Task List -->
+        <div id="taskList" class="task-list">
+            <!-- Task items will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- JavaScript to handle task functionality -->
+    <script>
+        // Sample array of tasks
+        const tasks = [
+            "Upskill Report",
+            "Upskill Topics for next week",
+            "Weekly Updates (Sheet)",
+            "Weekly Updates (Slides)",
+            "TAPULAC",
+            "PDO Training Plan",
+            "NH Dashboard",
+            "WD Timecard",
+            "WD Goal Setting",
+            "Boost - Coaching Acknowledgement",
+            "Boost - Waiving of TMs/Coaching TMs"
+        ];
+
+        // Function to render tasks on the page
+        function renderTasks() {
+            const taskList = document.getElementById("taskList");
+            taskList.innerHTML = ""; // Clear existing tasks
+            
+            const longestTaskLength = tasks.reduce((max, task) => Math.max(max, task.length), 0);
+
+            tasks.forEach(task => {
+                const taskElement = document.createElement("div");
+                taskElement.classList.add("task");
+
+                const taskNameElement = document.createElement("div");
+                taskNameElement.classList.add("task-name");
+                taskNameElement.textContent = task;
+                
+                const dropdownContainer = document.createElement("div");
+                dropdownContainer.classList.add("dropdown-container");
+
+                const dropdown = document.createElement("select");
+                dropdown.innerHTML = `
+                    <option value="pending" selected>Pending</option>
+                    <option value="done">Done</option>
+                    <option value="na">N/A</option>
+                `;
+                dropdown.addEventListener("change", () => {
+                    if (dropdown.value === "done") {
+                        taskNameElement.classList.add("done");
+                    } else {
+                        taskNameElement.classList.remove("done");
+                    }
+                });
+
+                dropdownContainer.appendChild(dropdown);
+
+                taskElement.appendChild(taskNameElement);
+                taskElement.appendChild(dropdownContainer);
+                taskList.appendChild(taskElement);
+
+                // Adjust margin-left of dropdown container based on the length of the task name
+                const marginLeft = (longestTaskLength - task.length) * 0.5 + 3;
+                dropdownContainer.style.marginLeft = `${marginLeft}ch`;
+            });
+        }
+
+        // Call renderTasks function to initially render tasks
+        renderTasks();
+    </script>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>By: Kira Hokuten</p>
+    </div>
+</body>
+</html>
