@@ -7,17 +7,22 @@
     <style>
         /* CSS styles */
         body {
-            font-family: Arial, sans-serif;
-        }
-        button {
-            cursor: pointer;
+            font-family: Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
         }
         .container {
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
         }
         .footer {
             font-size: 0.8em;
+            text-align: center;
+            margin-top: auto;
         }
         .task-list {
             display: flex;
@@ -35,6 +40,7 @@
         }
         .task-name {
             flex: 1;
+            font-family: Helvetica, Arial, sans-serif;
         }
         .dropdown-container {
             margin-left: 3ch; /* Adjust the margin as needed */
@@ -43,11 +49,29 @@
             text-decoration: line-through;
             color: green;
         }
+        .pending {
+            color: yellow;
+        }
+        .na {
+            color: gray;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>LX Weekly Task Tracker</h1>
+        
+        <!-- Profile Selection -->
+        <select id="profileSelect">
+            <option value="Kira Hokuten">Kira Hokuten</option>
+            <option value="Chelsea Taal">Chelsea Taal</option>
+            <option value="Gab Cruz">Gab Cruz</option>
+            <option value="Ef Ganab">Ef Ganab</option>
+            <option value="Mai Bautista">Mai Bautista</option>
+            <option value="Tim Sy">Tim Sy</option>
+            <option value="Pao Berba">Pao Berba</option>
+            <option value="V Tabaniag">V Tabaniag</option>
+        </select>
         
         <!-- Task List -->
         <div id="taskList" class="task-list">
@@ -72,8 +96,8 @@
             "Boost - Waiving of TMs/Coaching TMs"
         ];
 
-        // Function to render tasks on the page
-        function renderTasks() {
+        // Function to render tasks for the selected profile
+        function renderTasks(profile) {
             const taskList = document.getElementById("taskList");
             taskList.innerHTML = ""; // Clear existing tasks
             
@@ -98,11 +122,30 @@
                 `;
                 dropdown.addEventListener("change", () => {
                     if (dropdown.value === "done") {
+                        taskNameElement.classList.remove("pending", "na");
                         taskNameElement.classList.add("done");
+                    } else if (dropdown.value === "pending") {
+                        taskNameElement.classList.remove("done", "na");
+                        taskNameElement.classList.add("pending");
                     } else {
-                        taskNameElement.classList.remove("done");
+                        taskNameElement.classList.remove("done", "pending");
+                        taskNameElement.classList.add("na");
                     }
+                    saveProgress(profile, task, dropdown.value);
                 });
+
+                // Retrieve progress from localStorage
+                const progress = getProgress(profile, task);
+                if (progress) {
+                    dropdown.value = progress;
+                    if (progress === "done") {
+                        taskNameElement.classList.add("done");
+                    } else if (progress === "pending") {
+                        taskNameElement.classList.add("pending");
+                    } else {
+                        taskNameElement.classList.add("na");
+                    }
+                }
 
                 dropdownContainer.appendChild(dropdown);
 
@@ -116,8 +159,24 @@
             });
         }
 
-        // Call renderTasks function to initially render tasks
-        renderTasks();
+        // Function to save task progress to localStorage
+        function saveProgress(profile, task, progress) {
+            localStorage.setItem(`${profile}-${task}`, progress);
+        }
+
+        // Function to retrieve task progress from localStorage
+        function getProgress(profile, task) {
+            return localStorage.getItem(`${profile}-${task}`);
+        }
+
+        // Event listener for profile selection
+        document.getElementById("profileSelect").addEventListener("change", function() {
+            const selectedProfile = this.value;
+            renderTasks(selectedProfile);
+        });
+
+        // Call renderTasks function with default profile (Kira Hokuten)
+        renderTasks("Kira Hokuten");
     </script>
 
     <!-- Footer -->
