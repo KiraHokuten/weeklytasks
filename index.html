@@ -60,30 +60,31 @@
     <div class="container">
         <h1>LX Weekly Task Tracker</h1>
         
-        <!-- Profile Selection -->
+        <!-- Profile and Week Selection -->
+<div style="display: flex; align-items: center;">
+    <div style="margin-right: 10px;">
         <label for="profileSelect">Select Profile:</label>
         <select id="profileSelect">
             <option value="Kira Hokuten">Kira Hokuten</option>
-            <option value="Chelsea Taal">Chelsea Taal</option>
-            <option value="Gab Cruz">Gab Cruz</option>
-            <option value="Ef Ganab">Ef Ganab</option>
-            <option value="Mai Bautista">Mai Bautista</option>
-            <option value="Tim Sy">Tim Sy</option>
-            <option value="Pao Berba">Pao Berba</option>
-            <option value="V Tabaniag">V Tabaniag</option>
+            <!-- Other profile options -->
         </select>
-        
-        <!-- Week Selection -->
+    </div>
+
+    <div>
         <label for="weekSelect">Select Week:</label>
         <select id="weekSelect">
-            <!-- Weeks will be dynamically added here -->
+            <!-- Week options will be dynamically added here -->
         </select>
-        
-        <!-- Task List -->
-        <div id="taskList" class="task-list">
-            <!-- Task items will be dynamically added here -->
-        </div>
     </div>
+</div>
+
+<!-- Space below Profile and Week Selection -->
+<div style="margin-bottom: 20px;"></div>
+
+<!-- Task List -->
+<div id="taskList" class="task-list">
+    <!-- Task items will be dynamically added here -->
+</div>
 
     <!-- JavaScript to handle task functionality -->
     <script>
